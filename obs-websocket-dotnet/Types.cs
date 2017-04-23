@@ -418,6 +418,157 @@ namespace OBSWebsocketDotNet
     }
 
     /// <summary>
+    /// Streaming service description
+    /// </summary>
+    public struct OBSStreamingService
+    {
+        /// <summary>
+        /// Streaming service name
+        /// </summary>
+        public readonly string Name;
+
+        /// <summary>
+        /// Ingest servers available for this service
+        /// </summary>
+        public readonly List<string> Servers;
+        
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="data">JSON object body of an item in the "services" JSON array</param>
+        public OBSStreamingService(JObject data)
+        {
+            Name = (string)data["name"];
+            Servers = new List<string>();
+
+            var servers = (JArray)data["servers"];
+            foreach(JObject item in servers)
+            {
+                var url = (string)item["url"];
+                Servers.Add(url);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Interface to describe a generic RTMP settings object (obs calls these "services")
+    /// </summary>
+    public interface OBSRTMPSettings
+    {
+        /// <summary>
+        /// OBS' internal service id
+        /// </summary>
+        /// <returns></returns>
+        string ServiceId();
+
+        /// <summary>
+        /// OBS service settings
+        /// </summary>
+        /// <returns>JSON object data as a <see cref="JToken"/></returns>
+        JToken ToJToken();
+    }
+
+    /// <summary>
+    /// Settings of a Common RTMP service
+    /// </summary>
+    public struct OBSCommonRTMPSettings : OBSRTMPSettings
+    {
+        /// <summary>
+        /// Service name, as described in <see cref="OBSStreamingService"/> 
+        /// </summary>
+        public string ServiceName;
+
+        /// <summary>
+        /// Server url (must be one of the urls described in <see cref="OBSStreamingService"/> 
+        /// </summary>
+        public string ServerUrl;
+
+        /// <summary>
+        /// Stream key for the specified service
+        /// </summary>
+        public string StreamKey;
+
+        /// <summary>
+        /// OBS service type
+        /// </summary>
+        /// <returns></returns>
+        public string ServiceId()
+        {
+            return "rtmp_common";
+        }
+
+        /// <summary>
+        /// OBS service settings
+        /// </summary>
+        /// <returns>JSON object data as a <see cref="JToken"/></returns>
+        public JToken ToJToken()
+        {
+            var obj = new JObject();
+            obj.Add("service", ServiceName);
+            obj.Add("server", ServerUrl);
+            obj.Add("key", StreamKey);
+
+            return (JToken)obj;
+        }
+    }
+
+    /// <summary>
+    /// Settings of a Custom RTMP service
+    /// </summary>
+    public struct OBSCustomRTMPSettings : OBSRTMPSettings
+    {
+        /// <summary>
+        /// RTMP server address (IP or hostname)
+        /// </summary>
+        public string ServerAddress;
+
+        /// <summary>
+        /// RTMP stream key (a.k.a "stream name")
+        /// </summary>
+        public string StreamKey;
+
+        /// <summary>
+        /// True to enable RTMP authentication, False otherwise
+        /// </summary>
+        public bool UseAuthentication;
+
+        /// <summary>
+        /// RTMP authentication username
+        /// </summary>
+        public string AuthUsername;
+
+        /// <summary>
+        /// RTMP authentication password
+        /// </summary>
+        public string AuthPassword;
+
+        /// <summary>
+        /// OBS' internal service id
+        /// </summary>
+        /// <returns></returns>
+        public string ServiceId()
+        {
+            return "rtmp_custom";
+        }
+
+        /// <summary>
+        /// OBS service settings
+        /// </summary>
+        /// <returns>JSON object data as a <see cref="JToken"/> </returns>
+        public JToken ToJToken()
+        {
+            var obj = new JObject();
+            obj.Add("server", ServerAddress);
+            obj.Add("key", StreamKey);
+            obj.Add("use_auth", UseAuthentication);
+            obj.Add("username", AuthUsername);
+            obj.Add("password", AuthPassword);
+
+            return (JToken)obj;
+        }
+    }
+
+    /// <summary>
     /// Thrown if authentication fails
     /// </summary>
     public class AuthFailureException : Exception

@@ -345,5 +345,47 @@ namespace OBSWebsocketDotNet
 
             return profiles;
         }
+
+        /// <summary>
+        /// Start streaming
+        /// </summary>
+        public void StartStreaming()
+        {
+            SendRequest("StartStreaming");
+        }
+
+        /// <summary>
+        /// Start streaming with the specified RTMP settings
+        /// </summary>
+        /// <param name="settings">A <see cref="OBSCommonRTMPSettings"/> or <see cref="OBSCustomRTMPSettings"/> object describing the RTMP settings to use.</param>
+        public void StartStreamingWithSettings(OBSRTMPSettings settings)
+        {
+            var withSettings = new JObject();
+            withSettings.Add("type", settings.ServiceId());
+            withSettings.Add("settings", settings.ToJToken());
+
+            var requestFields = new JObject();
+            requestFields.Add("with-settings", withSettings);
+
+            SendRequest("StartStreaming", requestFields);
+        }
+
+        /// <summary>
+        /// List every streaming service known by OBS
+        /// </summary>
+        /// <returns>Streaming services descriptions list</returns>
+        public List<OBSStreamingService> ListStreamingServices()
+        {
+            var response = SendRequest("ListStreamingServices");
+            var services = (JArray)response["services"];
+
+            var list = new List<OBSStreamingService>();
+            foreach(var item in services)
+            {
+                list.Add(new OBSStreamingService((JObject)item));
+            }
+
+            return list;
+        }
     }
 }

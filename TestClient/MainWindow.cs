@@ -19,12 +19,14 @@
 using System;
 using System.Windows.Forms;
 using OBSWebsocketDotNet;
+using System.Collections.Generic;
 
 namespace TestClient
 {
     public partial class MainWindow : Form
     {
         protected OBSWebsocket _obs;
+        protected List<OBSStreamingService> serviceList;
 
         public MainWindow()
         {
@@ -120,6 +122,7 @@ namespace TestClient
             BeginInvoke((MethodInvoker)delegate
             {
                 btnToggleStreaming.Text = state;
+                gbCustomRTMP.Enabled = (newState == OutputState.Stopped);
             });
         }
 
@@ -220,6 +223,14 @@ namespace TestClient
                 onRecordingStateChange(_obs, OutputState.Started);
             else
                 onRecordingStateChange(_obs, OutputState.Stopped);
+
+            serviceList = _obs.ListStreamingServices();
+
+            comboCommonService.Items.Clear();
+            foreach(var service in serviceList)
+            {
+                comboCommonService.Items.Add(service.Name);
+            }
         }
 
         private void btnListScenes_Click(object sender, EventArgs e)
@@ -362,6 +373,45 @@ namespace TestClient
         private void btnSetTransitionDuration_Click(object sender, EventArgs e)
         {
             _obs.SetTransitionDuration((int)tbTransitionDuration.Value);
+        }
+
+        private void btnStartCommonStreaming_Click(object sender, EventArgs e)
+        {
+            var settings = new OBSCommonRTMPSettings();
+            settings.ServiceName = (string)comboCommonService.SelectedItem;
+            settings.ServerUrl = (string)comboCommonServer.SelectedItem;
+            settings.StreamKey = tbCommonKey.Text;
+
+            _obs.StartStreamingWithSettings(settings);
+        }
+
+        private void btnStartCustomStreaming_Click(object sender, EventArgs e)
+        {
+            var settings = new OBSCustomRTMPSettings();
+            settings.ServerAddress = tbCustomServer.Text;
+            settings.StreamKey = tbCustomStreamName.Text;
+            settings.UseAuthentication = cbUseAuth.Checked;
+            settings.AuthUsername = tbCustomAuthUsername.Text;
+            settings.AuthPassword = tbCustomAuthPassword.Text;
+
+            _obs.StartStreamingWithSettings(settings);
+        }
+
+        private void comboCommonService_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string serviceName = (string)comboCommonService.SelectedItem;
+
+            try
+            {
+                OBSStreamingService service = serviceList.Find(s => s.Name.Equals(serviceName));
+
+                comboCommonServer.Items.Clear();
+                foreach (string url in service.Servers)
+                {
+                    comboCommonServer.Items.Add(url);
+                }
+            }
+            catch(Exception ex) {}
         }
     }
 }
