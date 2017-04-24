@@ -371,6 +371,16 @@ namespace OBSWebsocketDotNet
         }
 
         /// <summary>
+        /// Get the RTMP settings of the currently running streaming output
+        /// </summary>
+        /// <returns>A generic object. This will have to be casted depending on type</returns>
+        public OBSRTMPSettings GetCurrentRTMPSettings()
+        {
+            var response = SendRequest("GetCurrentRTMPSettings");
+            return OBSRTMPSettings.FromJObjectBody(response);
+        }
+
+        /// <summary>
         /// List every streaming service known by OBS
         /// </summary>
         /// <returns>Streaming services descriptions list</returns>

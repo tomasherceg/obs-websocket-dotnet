@@ -451,27 +451,47 @@ namespace OBSWebsocketDotNet
     }
 
     /// <summary>
-    /// Interface to describe a generic RTMP settings object (obs calls these "services")
+    /// Base generic RTMP settings object (obs calls these "services")
     /// </summary>
-    public interface OBSRTMPSettings
+    public abstract class OBSRTMPSettings
     {
         /// <summary>
         /// OBS' internal service id
         /// </summary>
         /// <returns></returns>
-        string ServiceId();
+        public abstract string ServiceId();
 
         /// <summary>
         /// OBS service settings
         /// </summary>
         /// <returns>JSON object data as a <see cref="JToken"/></returns>
-        JToken ToJToken();
+        public abstract JToken ToJToken();
+
+        public abstract override string ToString();
+
+        /// <summary>
+        /// Create an <see cref="OBSRTMPSettings"/> object based on JSON data
+        /// </summary>
+        /// <param name="body">JSON body of a "GetCurrentRTMPSettings" response</param>
+        /// <returns></returns>
+        public static OBSRTMPSettings FromJObjectBody(JObject body)
+        {
+            var type = (string)body["type"];
+            var settings = (JObject)body["settings"];
+
+            if (type == "rtmp_common")
+                return new OBSCommonRTMPSettings(settings);
+            else if (type == "rtmp_custom")
+                return new OBSCustomRTMPSettings(settings);
+            else
+                return null;
+        }
     }
 
     /// <summary>
     /// Settings of a Common RTMP service
     /// </summary>
-    public struct OBSCommonRTMPSettings : OBSRTMPSettings
+    public class OBSCommonRTMPSettings : OBSRTMPSettings
     {
         /// <summary>
         /// Service name, as described in <see cref="OBSStreamingService"/> 
@@ -489,10 +509,28 @@ namespace OBSWebsocketDotNet
         public string StreamKey;
 
         /// <summary>
+        /// Generic constructor
+        /// </summary>
+        public OBSCommonRTMPSettings()
+        {
+        }
+
+        /// <summary>
+        /// Construct object with data from a <see cref="JObject"/> 
+        /// </summary>
+        /// <param name="settings"></param>
+        public OBSCommonRTMPSettings(JObject settings)
+        {
+            ServiceName = (string)settings["service"];
+            ServerUrl = (string)settings["server"];
+            StreamKey = (string)settings["key"];
+        }
+
+        /// <summary>
         /// OBS service type
         /// </summary>
         /// <returns></returns>
-        public string ServiceId()
+        public override string ServiceId()
         {
             return "rtmp_common";
         }
@@ -501,7 +539,7 @@ namespace OBSWebsocketDotNet
         /// OBS service settings
         /// </summary>
         /// <returns>JSON object data as a <see cref="JToken"/></returns>
-        public JToken ToJToken()
+        public override JToken ToJToken()
         {
             var obj = new JObject();
             obj.Add("service", ServiceName);
@@ -510,12 +548,20 @@ namespace OBSWebsocketDotNet
 
             return (JToken)obj;
         }
+
+        public override string ToString()
+        {
+            return "--- Common RTMP settings ---\n" +
+                   "Service: " + ServiceName + "\n" +
+                   "Server URL: " + ServerUrl + "\n" +
+                   "Stream Key: " + StreamKey + "\n";
+        }
     }
 
     /// <summary>
     /// Settings of a Custom RTMP service
     /// </summary>
-    public struct OBSCustomRTMPSettings : OBSRTMPSettings
+    public class OBSCustomRTMPSettings : OBSRTMPSettings
     {
         /// <summary>
         /// RTMP server address (IP or hostname)
@@ -543,10 +589,30 @@ namespace OBSWebsocketDotNet
         public string AuthPassword;
 
         /// <summary>
+        /// Generic constructor
+        /// </summary>
+        public OBSCustomRTMPSettings()
+        {
+        }
+
+        /// <summary>
+        /// Construct object with data from a <see cref="JObject"/> 
+        /// </summary>
+        /// <param name="settings"></param>
+        public OBSCustomRTMPSettings(JObject settings)
+        {
+            ServerAddress = (string)settings["server"];
+            StreamKey = (string)settings["key"];
+            UseAuthentication = (bool)settings["use_auth"];
+            AuthUsername = (string)settings["username"];
+            AuthPassword = (string)settings["password"];
+        }
+
+        /// <summary>
         /// OBS' internal service id
         /// </summary>
         /// <returns></returns>
-        public string ServiceId()
+        public override string ServiceId()
         {
             return "rtmp_custom";
         }
@@ -555,7 +621,7 @@ namespace OBSWebsocketDotNet
         /// OBS service settings
         /// </summary>
         /// <returns>JSON object data as a <see cref="JToken"/> </returns>
-        public JToken ToJToken()
+        public override JToken ToJToken()
         {
             var obj = new JObject();
             obj.Add("server", ServerAddress);
@@ -565,6 +631,16 @@ namespace OBSWebsocketDotNet
             obj.Add("password", AuthPassword);
 
             return (JToken)obj;
+        }
+
+        public override string ToString()
+        {
+            return "--- Custom RTMP settings ---\n" +
+                   "Server Address: " + ServerAddress + "\n" +
+                   "Stream Key: " + StreamKey + "\n" +
+                   "Use Auth: " + UseAuthentication.ToString() + "\n" +
+                   "Username: " + AuthUsername + "\n" +
+                   "Password: " + AuthPassword + "\n";
         }
     }
 
