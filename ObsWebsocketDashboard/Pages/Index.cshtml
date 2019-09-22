@@ -1,0 +1,28 @@
+﻿@page
+@model ObsWebsocketDashboard.IndexModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OBS Remote Control</title>
+    <link href="~/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/site.css" rel="stylesheet" />
+    <script src="~/lib/signalr/signalr.js"></script>
+    <script src="~/lib/react/umd/react.development.js"></script>
+    <script src="~/lib/react-dom/umd/react-dom.development.js"></script>
+    <script src="~/app.js"></script>
+</head>
+<body>
+    
+<div id="container" class="container"></div>
+
+<script type="text/javascript">
+    const app = new App(signalR, );
+    app.run();
+</script>
+
+</body>
+</html>
+
+@{
+}

@@ -1,0 +1,16 @@
+﻿.container {
+    padding-right: 100px;
+}
+
+.toolbar {
+    padding: 30px 0;
+}
+
+.toolbar .btn {
+    margin-right: 15px;
+}
+
+.scene-list .btn {
+    padding: 15px 0;
+    margin-bottom: 15px;
+}

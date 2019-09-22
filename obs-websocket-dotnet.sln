@@ -1,13 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29306.81
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "obs-websocket-dotnet", "obs-websocket-dotnet\obs-websocket-dotnet.csproj", "{C8668815-F21E-49C0-8F1A-58BC698153AF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient", "TestClient\TestClient.csproj", "{2CB2A741-4BFB-4AE8-894B-D6F146E6670F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "obs-websocket-dotnet-tests", "obs-websocket-dotnet-tests\obs-websocket-dotnet-tests.csproj", "{107BEC4B-3EC4-4CA0-A53F-7D3678DC7017}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServerSide", "ServerSide", "{C441CF13-826A-406F-9EC9-8E26E4D50FD9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObsWebsocketProxy", "ObsWebsocketProxy\ObsWebsocketProxy.csproj", "{E8F03B4A-B4BB-449D-9814-6C2577E1EB15}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObsWebsocketDashboard", "ObsWebsocketDashboard\ObsWebsocketDashboard.csproj", "{0A88FFEB-FAA1-4B11-80F7-D14908FBE544}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObsWebsocketModels", "ObsWebsocketModels\ObsWebsocketModels.csproj", "{EB10FD89-9B38-4CCE-BA27-339923DDCCF0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,8 +35,28 @@ Global
 		{107BEC4B-3EC4-4CA0-A53F-7D3678DC7017}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{107BEC4B-3EC4-4CA0-A53F-7D3678DC7017}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{107BEC4B-3EC4-4CA0-A53F-7D3678DC7017}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8F03B4A-B4BB-449D-9814-6C2577E1EB15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8F03B4A-B4BB-449D-9814-6C2577E1EB15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8F03B4A-B4BB-449D-9814-6C2577E1EB15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8F03B4A-B4BB-449D-9814-6C2577E1EB15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A88FFEB-FAA1-4B11-80F7-D14908FBE544}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A88FFEB-FAA1-4B11-80F7-D14908FBE544}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A88FFEB-FAA1-4B11-80F7-D14908FBE544}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A88FFEB-FAA1-4B11-80F7-D14908FBE544}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB10FD89-9B38-4CCE-BA27-339923DDCCF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB10FD89-9B38-4CCE-BA27-339923DDCCF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB10FD89-9B38-4CCE-BA27-339923DDCCF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB10FD89-9B38-4CCE-BA27-339923DDCCF0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E8F03B4A-B4BB-449D-9814-6C2577E1EB15} = {C441CF13-826A-406F-9EC9-8E26E4D50FD9}
+		{0A88FFEB-FAA1-4B11-80F7-D14908FBE544} = {C441CF13-826A-406F-9EC9-8E26E4D50FD9}
+		{EB10FD89-9B38-4CCE-BA27-339923DDCCF0} = {C441CF13-826A-406F-9EC9-8E26E4D50FD9}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EDD1612A-2D17-4661-8E7F-E92086E5A591}
 	EndGlobalSection
 EndGlobal
