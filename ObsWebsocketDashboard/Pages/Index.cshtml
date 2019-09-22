@@ -1,4 +1,6 @@
 ﻿@page
+@using Microsoft.Extensions.Configuration
+@using ObsWebsocketDashboard
 @model ObsWebsocketDashboard.IndexModel
 
 <!DOCTYPE html>
@@ -17,7 +19,7 @@
 <div id="container" class="container"></div>
 
 <script type="text/javascript">
-    const app = new App(signalR, );
+    const app = new App(signalR, "@(Startup.Configuration.GetSection("App").GetValue<string>("ClientId"))");
     app.run();
 </script>
 
