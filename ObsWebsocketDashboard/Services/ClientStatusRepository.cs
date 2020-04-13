@@ -13,7 +13,7 @@ namespace ObsWebsocketDashboard.Services
     {
         private readonly string cacheDirectory;
 
-        public ClientStatusRepository(IHostingEnvironment env)
+        public ClientStatusRepository(IWebHostEnvironment env)
         {
             this.cacheDirectory = Path.Combine(env.ContentRootPath, "App_Data\\StatusCache");
             if (!Directory.Exists(cacheDirectory))

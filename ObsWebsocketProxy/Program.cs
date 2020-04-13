@@ -25,15 +25,21 @@ namespace ObsWebsocketProxy
 
             // init SignalR
             hubConnection = new HubConnectionBuilder()
-                .WithUrl(ConfigurationManager.AppSettings["Hub:Url"])
+                .WithUrl(ConfigurationManager.AppSettings["Hub:Url"], options =>
+                {
+                    options.AccessTokenProvider = () => Task.FromResult(clientId.ToString());
+                })
+                .WithAutomaticReconnect()
                 .Build();
-            hubConnection.On<Guid, string>("SwitchScene", OnSwitchScene);
-            hubConnection.On<Guid, bool>("ChangeRecordingState", OnChangeRecordingState);
-            hubConnection.On<Guid, bool>("ChangeStreamingState", OnChangeStreamingState);
+            hubConnection.On<string>("SwitchScene", OnSwitchScene);
+            hubConnection.On<bool>("ChangeRecordingState", OnChangeRecordingState);
+            hubConnection.On<bool>("ChangeStreamingState", OnChangeStreamingState);
+            hubConnection.Reconnecting += OnHubConnectionReconnecting;
+            hubConnection.Reconnected += OnHubConnectionReconnected;
             hubConnection.Closed += OnHubConnectionClosed;
             await TryConnect();
 
-            // init OBC connection
+            // init OBS connection
             obsConnection = new ObsConnection(ConfigurationManager.AppSettings["OBS:WebsocketUrl"], ConfigurationManager.AppSettings["OBS:Password"]);
             obsConnection.StatusChanged += OnStatusChanged;
             obsConnection.Start();
@@ -47,7 +53,7 @@ namespace ObsWebsocketProxy
 
         private static async Task TryConnect()
         {
-            retry:
+        retry:
             try
             {
                 await hubConnection.StartAsync();
@@ -61,35 +67,26 @@ namespace ObsWebsocketProxy
             }
         }
 
-        private static void OnChangeStreamingState(Guid remoteClientId, bool enabled)
+        private static void OnChangeStreamingState(bool enabled)
         {
-            if (remoteClientId == clientId)
-            {
-                obsConnection.ChangeStreamingState(enabled);
-            }
+            obsConnection.ChangeStreamingState(enabled);
         }
 
-        private static void OnChangeRecordingState(Guid remoteClientId, bool enabled)
+        private static void OnChangeRecordingState(bool enabled)
         {
-            if (remoteClientId == clientId)
-            {
-                obsConnection.ChangeRecordingState(enabled);
-            }
+            obsConnection.ChangeRecordingState(enabled);
         }
 
-        private static void OnSwitchScene(Guid remoteClientId, string scene)
+        private static void OnSwitchScene(string scene)
         {
-            if (remoteClientId == clientId)
-            {
-                obsConnection.SwitchScene(scene);
-            }
+            obsConnection.SwitchScene(scene);
         }
 
         private static void OnStatusChanged(ClientStatus status)
         {
             try
             {
-                hubConnection.InvokeAsync("StatusChanged", clientId, status);
+                hubConnection.InvokeAsync("StatusChanged", status);
             }
             catch (Exception)
             {
@@ -97,12 +94,24 @@ namespace ObsWebsocketProxy
             }
         }
 
-        private static async Task OnHubConnectionClosed(Exception error)
+        private static Task OnHubConnectionClosed(Exception error)
         {
-            Console.WriteLine("Hub: Disconnected, will retry in 5 seconds.");
-            await Task.Delay(5000);
-            await TryConnect();
+            Console.WriteLine("Hub: Disconnected, will retry.");
+            return Task.CompletedTask;
         }
+
+        private static Task OnHubConnectionReconnected(string arg)
+        {
+            Console.WriteLine("Hub: Reconnected.");
+            return Task.CompletedTask;
+        }
+
+        private static Task OnHubConnectionReconnecting(Exception arg)
+        {
+            Console.WriteLine("Hub: Reconnecting...");
+            return Task.CompletedTask;
+        }
+
 
     }
 }

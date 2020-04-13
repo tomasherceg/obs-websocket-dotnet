@@ -10,19 +10,34 @@
     <title>OBS Remote Control</title>
     <link href="~/lib/bootstrap/css/bootstrap.css" rel="stylesheet"/>
     <link href="~/site.css" rel="stylesheet"/>
-    <script src="~/lib/signalr/signalr.js"></script>
-    <script src="~/lib/react/umd/react.development.js"></script>
-    <script src="~/lib/react-dom/umd/react-dom.development.js"></script>
-    <script src="~/app.js"></script>
 </head>
 <body>
     
 <div id="container" class="container"></div>
-
-<script type="text/javascript">
-    const app = new App(signalR, "@(Startup.Configuration.GetSection("App").GetValue<string>("ClientId"))");
-    app.run();
-</script>
+    
+@if (!User.Identity.IsAuthenticated)
+{
+    <form method="get" action="/">
+        <p>
+            Enter Client ID:
+            <input type="text" name="access_token"/>
+        </p>
+        <p>
+            <input type="submit" value="Sign In"/>
+        </p>
+    </form>
+}
+else
+{
+    <script src="~/lib/signalr/signalr.js"></script>
+    <script src="~/lib/react/umd/react.development.js"></script>
+    <script src="~/lib/react-dom/umd/react-dom.development.js"></script>
+    <script src="~/app.js"></script>
+    <script type="text/javascript">
+        const app = new App(signalR, "@User.Identity.Name");
+        app.run();
+    </script>
+}
 
 </body>
 </html>

@@ -129,48 +129,60 @@ var App = (function () {
             var domContainer = document.querySelector('#container');
             var root = ReactDOM.render(React.createElement(ControlPanel, { app: this }), domContainer);
 
-            this.connection = new signalR.HubConnectionBuilder().withUrl("/obs").configureLogging(signalR.LogLevel.Information).build();
+            this.connection = new signalR.HubConnectionBuilder().withUrl("/obs", { accessTokenFactory: function accessTokenFactory() {
+                    return _this4.clientId;
+                } }).withAutomaticReconnect().configureLogging(signalR.LogLevel.Information).build();
 
-            this.connection.on("StatusChanged", function (remoteClientId, status) {
-                if (remoteClientId === _this4.clientId) {
-                    root.setState(status);
-                }
+            this.connection.on("StatusChanged", function (status) {
+                root.setState(status);
             });
             this.connection.on("ChangeRecordingState", function () {});
             this.connection.on("ChangeStreamingState", function () {});
             this.connection.on("SwitchScene", function () {});
 
-            var connect = function connect() {
-                _this4.connection.start().then(function () {
-                    _this4.connection.invoke("GetLastStatus", _this4.clientId);
-                }, function (err) {
-                    root.setState({ isConnected: false });
-                    console.log(err);
-                    setTimeout(function () {
-                        return connect();
-                    }, 5000);
-                });
-            };
             this.connection.onclose(function () {
                 root.setState({ isConnected: false });
-                connect();
+                console.log("Connection closed.");
             });
-            connect();
+            this.connection.onreconnecting(function () {
+                root.setState({ isConnected: false });
+                console.log("Reconnecting...");
+            });
+            this.connection.onreconnected(function () {
+                console.log("Reconnected...");
+            });
+
+            this.connect();
+        }
+    }, {
+        key: "connect",
+        value: function connect() {
+            var _this5 = this;
+
+            this.connection.start().then(function () {
+                _this5.connection.invoke("GetLastStatus");
+            }, function (err) {
+                root.setState({ isConnected: false });
+                console.log(err);
+                setTimeout(function () {
+                    return _this5.connect();
+                }, 5000);
+            });
         }
     }, {
         key: "switchScene",
         value: function switchScene(scene) {
-            this.connection.invoke("SwitchScene", this.clientId, scene);
+            this.connection.invoke("SwitchScene", scene);
         }
     }, {
         key: "changeRecordingState",
         value: function changeRecordingState(enabled) {
-            this.connection.invoke("ChangeRecordingState", this.clientId, enabled);
+            this.connection.invoke("ChangeRecordingState", enabled);
         }
     }, {
         key: "changeStreamingState",
         value: function changeStreamingState(enabled) {
-            this.connection.invoke("ChangeStreamingState", this.clientId, enabled);
+            this.connection.invoke("ChangeStreamingState", enabled);
         }
     }]);
 

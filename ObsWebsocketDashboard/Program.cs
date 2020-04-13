@@ -19,6 +19,10 @@ namespace ObsWebsocketDashboard
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration(config =>
+                {
+                    config.AddJsonFile("App_Data/tokens.json", optional: true);
+                })
                 .UseStartup<Startup>();
     }
 }

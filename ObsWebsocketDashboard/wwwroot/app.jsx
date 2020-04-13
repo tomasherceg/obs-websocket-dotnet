@@ -54,45 +54,55 @@ class App {
         let root = ReactDOM.render(<ControlPanel app={this} />, domContainer);
 
         this.connection = new signalR.HubConnectionBuilder()
-            .withUrl("/obs")
+            .withUrl("/obs", { accessTokenFactory: () => this.clientId })
+            .withAutomaticReconnect()
             .configureLogging(signalR.LogLevel.Information)
             .build();
 
         this.connection.on("StatusChanged",
-            (remoteClientId, status) => {
-                if (remoteClientId === this.clientId) {
-                    root.setState(status);
-                }
+            status => {
+                root.setState(status);
             });
         this.connection.on("ChangeRecordingState", () => { });
         this.connection.on("ChangeStreamingState", () => { });
         this.connection.on("SwitchScene", () => { });
 
-        let connect = () => {
-            this.connection.start().then(
-                () => { this.connection.invoke("GetLastStatus", this.clientId); },
-                err => {
-                    root.setState({ isConnected: false });
-                    console.log(err);
-                    setTimeout(() => connect(), 5000);
-                });
-        };
         this.connection.onclose(() => {
             root.setState({ isConnected: false });
-            connect();
+            console.log("Connection closed.");
         });
-        connect();
+        this.connection.onreconnecting(() => {
+            root.setState({ isConnected: false });
+            console.log("Reconnecting...");
+        });
+        this.connection.onreconnected(() => {
+            console.log("Reconnected...");
+        });
+
+        this.connect();
+    }
+
+    connect() {
+        this.connection.start().then(
+            () => {
+                this.connection.invoke("GetLastStatus");
+            },
+            err => {
+                root.setState({ isConnected: false });
+                console.log(err);
+                setTimeout(() => this.connect(), 5000);
+            });
     }
 
     switchScene(scene) {
-        this.connection.invoke("SwitchScene", this.clientId, scene);
+        this.connection.invoke("SwitchScene", scene);
     }
 
     changeRecordingState(enabled) {
-        this.connection.invoke("ChangeRecordingState", this.clientId, enabled);
+        this.connection.invoke("ChangeRecordingState", enabled);
     }
 
     changeStreamingState(enabled) {
-        this.connection.invoke("ChangeStreamingState", this.clientId, enabled);
+        this.connection.invoke("ChangeStreamingState", enabled);
     }
 }
