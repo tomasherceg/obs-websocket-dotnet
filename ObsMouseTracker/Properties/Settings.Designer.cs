@@ -94,5 +94,17 @@ namespace ObsMouseTracker.Properties {
                 this["ScreenOnlySceneName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsEnabled {
+            get {
+                return ((bool)(this["IsEnabled"]));
+            }
+            set {
+                this["IsEnabled"] = value;
+            }
+        }
     }
 }

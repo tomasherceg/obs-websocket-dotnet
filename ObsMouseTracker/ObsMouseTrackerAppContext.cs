@@ -12,14 +12,27 @@ namespace ObsMouseTracker
         private readonly ContextMenuStrip contextMenu;
         private readonly MouseTrackingService mouseTrackingService;
 
+        private readonly ToolStripMenuItem enabledMenuItem;
+        private readonly ToolStripMenuItem settingsMenuItem;
+        private readonly ToolStripMenuItem exitMenuItem;
+
         public ObsMouseTrackerAppContext()
         {
+            // build context menu
             contextMenu = new ContextMenuStrip();
-            contextMenu.Items.Add(new ToolStripMenuItem("Settings", null, ShowSettings));
-            contextMenu.Items.Add(new ToolStripSeparator());
-            contextMenu.Items.Add(new ToolStripMenuItem("Exit", null, Exit));
+            enabledMenuItem = new ToolStripMenuItem("Enabled", null, ToggleEnabled)
+            {
+                Checked = Settings.Default.IsEnabled
+            };
+            settingsMenuItem = new ToolStripMenuItem("Settings", null, ShowSettings);
+            exitMenuItem = new ToolStripMenuItem("Exit", null, Exit);
 
-            // Initialize Tray Icon
+            contextMenu.Items.Add(enabledMenuItem);
+            contextMenu.Items.Add(settingsMenuItem);
+            contextMenu.Items.Add(new ToolStripSeparator());
+            contextMenu.Items.Add(exitMenuItem);
+
+            // initialize tray icon
             trayIcon = new NotifyIcon()
             {
                 Icon = Resources.AppIcon,
@@ -27,9 +40,18 @@ namespace ObsMouseTracker
                 Visible = true
             };
 
+            // start mouse tracking
             mouseTrackingService = new MouseTrackingService();
         }
 
+        private void ToggleEnabled(object sender, EventArgs e)
+        {
+            Settings.Default.IsEnabled = !Settings.Default.IsEnabled;
+            Settings.Default.Save();
+
+            enabledMenuItem.Checked = Settings.Default.IsEnabled;
+        }
+        
         private void ShowSettings(object sender, EventArgs e)
         {
             using (var f = new ConfigurationForm())

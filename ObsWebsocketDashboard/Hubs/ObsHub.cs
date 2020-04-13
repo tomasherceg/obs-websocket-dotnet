@@ -41,7 +41,7 @@ namespace ObsWebsocketDashboard.Hubs
         {
             var status = await clientStatusRepository.LoadState(ClientId);
 
-            await Clients.Group(GroupName)
+            await Clients.Caller
                 .SendCoreAsync(nameof(StatusChanged), new object[] { status });
         }
 

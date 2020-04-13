@@ -18,7 +18,6 @@ namespace ObsMouseTracker
     {
         private readonly Timer timer;
         private readonly HubConnection hubConnection;
-        private readonly Guid clientId;
         private readonly object locker = new object();
 
         private bool lastStateInArea = false;
@@ -47,13 +46,19 @@ namespace ObsMouseTracker
         {
             timer = new Timer(OnTick, null, 500, 500);
 
-            clientId = new Guid(ConfigurationManager.AppSettings["Hub:ClientId"]);
+            var clientId = new Guid(ConfigurationManager.AppSettings["Hub:ClientId"]);
 
             // init SignalR
             hubConnection = new HubConnectionBuilder()
-                .WithUrl(ConfigurationManager.AppSettings["Hub:Url"])
+                .WithUrl(ConfigurationManager.AppSettings["Hub:Url"], options =>
+                {
+                    options.AccessTokenProvider = () => Task.FromResult(clientId.ToString());
+                })
+                .WithAutomaticReconnect()
                 .Build();
-            hubConnection.On<Guid, ClientStatus>("StatusChanged", (id, status) => CurrentScene = status.ActiveScene);
+            hubConnection.On<ClientStatus>("StatusChanged", status => CurrentScene = status.ActiveScene);
+            hubConnection.Reconnecting += OnHubConnectionReconnecting;
+            hubConnection.Reconnected += OnHubConnectionReconnected;
             hubConnection.Closed += OnHubConnectionClosed;
             Task.Run(TryConnect);
         }
@@ -85,13 +90,15 @@ namespace ObsMouseTracker
 
         private void ChangeScene(string sceneName)
         {
+            if (!Settings.Default.IsEnabled) return;
+
             try
             {
-                hubConnection.InvokeAsync("SwitchScene", clientId, sceneName);
+                hubConnection.InvokeAsync("SwitchScene", sceneName);
             }
             catch (Exception)
             {
-                Console.WriteLine("HUB: Message send failure.");
+                Console.WriteLine("Hub: Cannot change scene. Message send failure.");
             }
         }
 
@@ -114,14 +121,33 @@ namespace ObsMouseTracker
                 await Task.Delay(5000);
                 goto retry;
             }
+
+            try
+            {
+                await hubConnection.InvokeAsync("GetLastStatus");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Hub: Cannot get last status. Message send failure.");
+            }
         }
 
-        private async Task OnHubConnectionClosed(Exception error)
+        private Task OnHubConnectionClosed(Exception error)
         {
-            Console.WriteLine("Hub: Disconnected, will retry in 5 seconds.");
-            await Task.Delay(5000);
-            await TryConnect();
+            Console.WriteLine("Hub: Disconnected, will retry.");
+            return Task.CompletedTask;
         }
 
+        private static Task OnHubConnectionReconnected(string arg)
+        {
+            Console.WriteLine("Hub: Reconnected.");
+            return Task.CompletedTask;
+        }
+
+        private static Task OnHubConnectionReconnecting(Exception arg)
+        {
+            Console.WriteLine("Hub: Reconnecting...");
+            return Task.CompletedTask;
+        }
     }
 }

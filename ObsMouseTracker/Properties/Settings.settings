@@ -20,5 +20,8 @@
     <Setting Name="ScreenOnlySceneName" Type="System.String" Scope="User">
       <Value Profile="(Default)">Screen Only</Value>
     </Setting>
+    <Setting Name="IsEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
