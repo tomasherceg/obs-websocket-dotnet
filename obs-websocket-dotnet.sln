@@ -13,9 +13,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServerSide", "ServerSide", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObsWebsocketProxy", "ObsWebsocketProxy\ObsWebsocketProxy.csproj", "{E8F03B4A-B4BB-449D-9814-6C2577E1EB15}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObsWebsocketDashboard", "ObsWebsocketDashboard\ObsWebsocketDashboard.csproj", "{0A88FFEB-FAA1-4B11-80F7-D14908FBE544}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ObsWebsocketDashboard", "ObsWebsocketDashboard\ObsWebsocketDashboard.csproj", "{0A88FFEB-FAA1-4B11-80F7-D14908FBE544}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObsWebsocketModels", "ObsWebsocketModels\ObsWebsocketModels.csproj", "{EB10FD89-9B38-4CCE-BA27-339923DDCCF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ObsWebsocketModels", "ObsWebsocketModels\ObsWebsocketModels.csproj", "{EB10FD89-9B38-4CCE-BA27-339923DDCCF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObsMouseTracker", "ObsMouseTracker\ObsMouseTracker.csproj", "{488EE9CC-05F0-4E2E-A8B4-F47B3EE9F11F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{EB10FD89-9B38-4CCE-BA27-339923DDCCF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB10FD89-9B38-4CCE-BA27-339923DDCCF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB10FD89-9B38-4CCE-BA27-339923DDCCF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{488EE9CC-05F0-4E2E-A8B4-F47B3EE9F11F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{488EE9CC-05F0-4E2E-A8B4-F47B3EE9F11F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{488EE9CC-05F0-4E2E-A8B4-F47B3EE9F11F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{488EE9CC-05F0-4E2E-A8B4-F47B3EE9F11F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +61,7 @@ Global
 		{E8F03B4A-B4BB-449D-9814-6C2577E1EB15} = {C441CF13-826A-406F-9EC9-8E26E4D50FD9}
 		{0A88FFEB-FAA1-4B11-80F7-D14908FBE544} = {C441CF13-826A-406F-9EC9-8E26E4D50FD9}
 		{EB10FD89-9B38-4CCE-BA27-339923DDCCF0} = {C441CF13-826A-406F-9EC9-8E26E4D50FD9}
+		{488EE9CC-05F0-4E2E-A8B4-F47B3EE9F11F} = {C441CF13-826A-406F-9EC9-8E26E4D50FD9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EDD1612A-2D17-4661-8E7F-E92086E5A591}
