@@ -15,6 +15,7 @@
     @if (User.Identity.IsAuthenticated)
     {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.3/signalr.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
         <script type="text/javascript">
             var connection = new signalR.HubConnectionBuilder()
                 .withUrl("/obs", { accessTokenFactory: () => "@User.Identity.Name" })
@@ -23,10 +24,31 @@
                 .build();
 
             this.connection.on("QueueCaption", function (className, content) {
-                var node = document.createElement("div");
-                node.className = className;
-                node.innerHTML = "<div class='content'>" + content + "</div>";
-                document.body.appendChild(node);
+                // add the element
+                var node = $("<div class='" + className + " offscreen'><div class='content'>" + content + "</div></div>");
+                $("body").append(node);
+
+                // measure the element
+                var width = node.width();
+                var height = node.height();
+
+                // animate
+                if (className === "speaker-name") {
+                    node.css({ width: 0, height: 15 }).removeClass("offscreen")
+                        .animate({ "width": width }, { queue: true, duration: 1000 })
+                        .animate({ "height": height }, { queue: true, duration: 1000 })
+                        .delay(15000)
+                        .animate({ "height": 15 }, { queue: true, duration: 1000 })
+                        .animate({ "width": 0 }, { queue: true, duration: 1000, complete: function () { node.remove(); } });
+
+                } else if (className === "notification") {
+                    node.css({ width: 0, height: 15 }).removeClass("offscreen")
+                        .animate({ "left": 0, "width": 1920 }, { queue: true, duration: 1000 })
+                        .animate({ "height": height }, { queue: true, duration: 1000 })
+                        .delay(15000)
+                        .animate({ "height": 15 }, { queue: true, duration: 1000 })
+                        .animate({ "left": 960, "width": 0 }, { queue: true, duration: 1000, complete: function () { node.remove(); } });
+                }
             });
 
             var connect = function() {

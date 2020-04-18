@@ -35,7 +35,7 @@ export class CaptionsTemplateEditor extends React.Component<CaptionsTemplateEdit
                     <textarea ref={this.contentRef} className="form-control" defaultValue={this.props.template.content}></textarea>
                 </div>
                 <div className="form-group">
-                    <button type="submit" className="btn btn-primary">Queue Caption</button>
+                    <button type="submit" className="btn btn-primary">Display Now</button>
                     <button type="button" className="btn btn-danger" onClick={() => this.props.onCancel()}>Cancel</button>
                 </div>
             </form>;

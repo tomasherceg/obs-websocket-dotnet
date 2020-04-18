@@ -4,6 +4,7 @@ import * as React from "react";
 
 export interface CaptionsTemplateListProps {
     templates: CaptionTemplate[];
+    onTemplateEdited: (template: CaptionTemplate) => void;
     onTemplateSelected: (template: CaptionTemplate) => void;
 }
 
@@ -16,6 +17,7 @@ export class CaptionsTemplateList extends React.Component<CaptionsTemplateListPr
                     <th>Type</th>
                     <th>Content</th>
                     <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -26,8 +28,15 @@ export class CaptionsTemplateList extends React.Component<CaptionsTemplateListPr
                         <td>
                             <button type="button"
                                 className="btn btn-dark"
-                                onClick={() => this.props.onTemplateSelected(t)}>
-                                Use
+                                onClick={() => this.props.onTemplateEdited(t)}>
+                                Customize
+                            </button>
+                        </td>
+                        <td>
+                            <button type="button"
+                                    className="btn btn-primary"
+                                    onClick={() => this.props.onTemplateSelected(t)}>
+                                Display Now
                             </button>
                         </td>
                     </tr>)}

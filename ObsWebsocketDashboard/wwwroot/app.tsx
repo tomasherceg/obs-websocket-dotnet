@@ -93,7 +93,7 @@ export class App extends React.Component<AppProps, ControlPanelState> {
 
     getDefaultTemplates(): CaptionTemplate[] {
         return [
-            { id: "1", className: "speaker-label", content: "Tomáš Herceg" },
+            { id: "1", className: "speaker-name", content: "Tomáš Herceg" },
             { id: "2", className: "notification", content: "Ask us on chat --- <u>https://gitter.im/riganti/dotvvm-meetup</u>" }
         ];
     }
