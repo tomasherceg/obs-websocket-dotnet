@@ -1,0 +1,49 @@
+﻿@page
+@using Microsoft.Extensions.Configuration
+@using ObsWebsocketDashboard
+@model ObsWebsocketDashboard.CaptionsModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>OBS Remote Control</title>
+    <link href="~/captions.css" rel="stylesheet" />
+</head>
+<body>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.3/signalr.min.js"></script>
+        <script type="text/javascript">
+            var connection = new signalR.HubConnectionBuilder()
+                .withUrl("/obs", { accessTokenFactory: () => "@User.Identity.Name" })
+                .withAutomaticReconnect()
+                .configureLogging(signalR.LogLevel.Information)
+                .build();
+
+            this.connection.on("QueueCaption", function (className, content) {
+                var node = document.createElement("div");
+                node.className = className;
+                node.innerHTML = "<div class='content'>" + content + "</div>";
+                document.body.appendChild(node);
+            });
+
+            var connect = function() {
+                this.connection.start().then(
+                    function() {},
+                    function(err) {
+                        console.log(err);
+                        setTimeout(() => connect(), 5000);
+                    }
+                );
+            };
+            connect();
+
+        </script>
+    }
+</body>
+</html>
+
+@{
+}

@@ -1,0 +1,130 @@
+﻿@font-face {
+    font-family: 'prometo';
+    font-display: block;
+    src: url('Fonts/prometo.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'prometo-bold';
+    font-display: block;
+    src: url('Fonts/prometo-bold.otf') format('opentype');
+}
+
+@keyframes speaker-name-animation {
+    0% {
+        width: 0px;
+        height: 15px;
+    }
+
+    5% {
+        width: 400px;
+        height: 15px;
+    }
+
+    10% {
+        width: 400px;
+        height: 120px;
+    }
+
+    90% {
+        width: 400px;
+        height: 120px;
+    }
+
+    95% {
+        width: 400px;
+        height: 15px;
+    }
+
+    100% {
+        width: 0px;
+        height: 15px;
+    }
+}
+
+@keyframes notification-animation {
+    0% {
+        width: 0px;
+        margin-left: 0px;
+        height: 15px;
+    }
+
+    5% {
+        width: 1920px;
+        margin-left: -960px;
+        height: 15px;
+    }
+
+    10% {
+        width: 1920px;
+        margin-left: -960px;
+        height: 120px;
+    }
+
+    90% {
+        width: 1920px;
+        margin-left: -960px;
+        height: 120px;
+    }
+
+    95% {
+        width: 1920px;
+        margin-left: -960px;
+        height: 15px;
+    }
+
+    100% {
+        width: 0px;
+        height: 15px;
+    }
+}
+
+body {
+    background-color: transparent;
+    position: relative;
+    width: 1920px;
+    height: 1080px;
+    box-sizing: border-box;
+}
+
+.speaker-name {
+    overflow: hidden;
+    position: absolute;
+    left: 100px;
+    top: 850px;
+    height: 0px;
+    animation-name: speaker-name-animation;
+    animation-duration: 20s;
+}
+
+    .speaker-name > .content {
+        background-color: #2b2c2a;
+        border-top: solid 15px #f0b512;
+        padding: 25px 40px;
+        color: #f0b512;
+        font-family: prometo,sans-serif;
+        font-size: 36px;
+    }
+
+.notification {
+    overflow: hidden;
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    margin-left: 0px;
+    height: 0px;
+    width: 0%;
+    animation-name: notification-animation;
+    animation-duration: 20s;
+}
+
+    .notification > .content {
+        background-color: #2b2c2a;
+        border-top: solid 15px #f0b512;
+        padding: 25px 40px;
+        color: #f0b512;
+        font-family: prometo,sans-serif;
+        font-size: 36px;
+        text-align: center;
+        height: 120px;
+    }

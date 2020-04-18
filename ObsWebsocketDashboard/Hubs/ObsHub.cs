@@ -63,5 +63,11 @@ namespace ObsWebsocketDashboard.Hubs
                 .SendCoreAsync(nameof(ChangeStreamingState), new object[] { enabled });
         }
 
+        public async Task QueueCaption(string className, string content)
+        {
+            await Clients.GroupExcept(GroupName, Context.ConnectionId)
+                .SendCoreAsync(nameof(QueueCaption), new object[] { className, content });
+        }
+
     }
 }
