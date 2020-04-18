@@ -26,7 +26,7 @@ export class CaptionsPanel extends React.Component<CaptionsPanelProps, CaptionsP
     render() {
         return <div>
             <h2>Live Captions</h2>
-            <p><small>URL for Browser in OBS: <code>/captions?access_token=...</code></small></p>
+            <p><small>URL for Browser in OBS: <code>/captions?access_token=...&amp;theme=update</code></small></p>
             <CaptionsTemplateList templates={this.props.templates}
                 onTemplateEdited={this.useTemplate.bind(this)}
                 onTemplateSelected={this.captionCreated.bind(this)}/>
