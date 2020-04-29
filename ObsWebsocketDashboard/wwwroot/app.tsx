@@ -94,7 +94,13 @@ export class App extends React.Component<AppProps, ControlPanelState> {
     getDefaultTemplates(): CaptionTemplate[] {
         return [
             { id: "1", className: "speaker-name", content: "Tomáš Herceg" },
-            { id: "2", className: "notification", content: "Ask us on chat --- <u>https://gitter.im/riganti/dotvvm-meetup</u>" }
+            { id: "2", className: "speaker-name", content: "Roman Jašek" },
+            { id: "3", className: "speaker-name", content: "Michal Tichý" },
+            { id: "4", className: "speaker-name", content: "Milan Mikuš" },
+            { id: "5", className: "notification", content: "Get DotVVM for Visual Studio --- <u>https://www.dotvvm.com/install</u>" },
+            { id: "6", className: "notification", content: "DotVVM Documentation --- <u>https://www.dotvvm.com/docs</u>" },
+            { id: "7", className: "notification", content: "Cheat Sheet for Web Forms devs --- <u>https://www.dotvvm.com/webforms</u>" },
+            { id: "8", className: "notification", content: "Ask us anything in the chat ➡➡" }
         ];
     }
 
