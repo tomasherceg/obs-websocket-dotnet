@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
-using OBSWebsocketDotNet;
-using OBSWebsocketDotNet.Types;
+using Microsoft.Extensions.Configuration;
 using ObsWebsocketModels;
 
 namespace ObsWebsocketProxy
@@ -21,11 +14,16 @@ namespace ObsWebsocketProxy
 
         static async Task Main(string[] args)
         {
-            clientId = new Guid(ConfigurationManager.AppSettings["Hub:ClientId"]);
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .AddUserSecrets(typeof(Program).Assembly)
+                .Build();
+
+            clientId = new Guid(configuration.GetSection("hub:clientId").Value);
 
             // init SignalR
             hubConnection = new HubConnectionBuilder()
-                .WithUrl(ConfigurationManager.AppSettings["Hub:Url"], options =>
+                .WithUrl(configuration.GetSection("hub:url").Value, options =>
                 {
                     options.AccessTokenProvider = () => Task.FromResult(clientId.ToString());
                 })
@@ -40,7 +38,7 @@ namespace ObsWebsocketProxy
             await TryConnect();
 
             // init OBS connection
-            obsConnection = new ObsConnection(ConfigurationManager.AppSettings["OBS:WebsocketUrl"], ConfigurationManager.AppSettings["OBS:Password"]);
+            obsConnection = new ObsConnection(configuration.GetSection("obs:url").Value, configuration.GetSection("obs:password").Value);
             obsConnection.StatusChanged += OnStatusChanged;
             obsConnection.Start();
 

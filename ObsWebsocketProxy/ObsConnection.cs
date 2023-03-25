@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using OBSWebsocketDotNet;
+using OBSWebsocketDotNet.Communication;
 using OBSWebsocketDotNet.Types;
+using OBSWebsocketDotNet.Types.Events;
 using ObsWebsocketModels;
 
 namespace ObsWebsocketProxy
@@ -35,9 +37,9 @@ namespace ObsWebsocketProxy
             obs = new OBSWebsocket();
             obs.Connected += OnConnect;
             obs.Disconnected += OnDisconnect;
-            obs.SceneChanged += OnSceneChange;
-            obs.StreamingStateChanged += OnStreamingStateChange;
-            obs.RecordingStateChanged += OnRecordingStateChange;
+            obs.CurrentProgramSceneChanged += OnSceneChange;
+            obs.StreamStateChanged += OnStreamingStateChange;
+            obs.RecordStateChanged += OnRecordingStateChange;
             
             TryConnect();
         }
@@ -71,7 +73,7 @@ namespace ObsWebsocketProxy
             Console.WriteLine("OBS: Connected");
         }
 
-        private void OnDisconnect(object sender, EventArgs e)
+        private void OnDisconnect(object sender, ObsDisconnectionInfo e)
         {
             Console.WriteLine("OBS: Disconnected");
             Console.WriteLine("OBS: Will retry in 5 seconds...");
@@ -91,21 +93,21 @@ namespace ObsWebsocketProxy
             }
         }
 
-        private void OnSceneChange(OBSWebsocket sender, string newSceneName)
+        private void OnSceneChange(object sender, ProgramSceneChangedEventArgs args)
         {
-            Console.WriteLine($"OBS: Scene changed to {newSceneName}");
+            Console.WriteLine($"OBS: Scene changed to {args.SceneName}");
             ReportStatusChanged();
         }
 
-        private void OnStreamingStateChange(OBSWebsocket sender, OutputState type)
+        private void OnStreamingStateChange(object sender, StreamStateChangedEventArgs args)
         {
-            Console.WriteLine($"OBS: Streaming {type}");
+            Console.WriteLine($"OBS: Streaming {args.OutputState.State}");
             ReportStatusChanged();
         }
 
-        private void OnRecordingStateChange(OBSWebsocket sender, OutputState type)
+        private void OnRecordingStateChange(object sender, RecordStateChangedEventArgs args)
         {
-            Console.WriteLine($"OBS: Recording {type}");
+            Console.WriteLine($"OBS: Recording {args.OutputState.State}");
             ReportStatusChanged();
         }
 
@@ -118,14 +120,15 @@ namespace ObsWebsocketProxy
                 {
                     if (obs.IsConnected)
                     {
-                        var streamingStatus = obs.GetStreamingStatus();
+                        var streamingStatus = obs.GetStreamStatus();
+                        var recordingStatus = obs.GetRecordStatus();
                         status = new ClientStatus()
                         {
                             IsConnected = true,
                             Scenes = obs.ListScenes().Select(s => s.Name).ToList(),
-                            ActiveScene = obs.GetCurrentScene().Name,
-                            IsStreaming = streamingStatus.IsStreaming,
-                            IsRecording = streamingStatus.IsRecording
+                            ActiveScene = obs.GetCurrentProgramScene(),
+                            IsStreaming = streamingStatus.IsActive,
+                            IsRecording = recordingStatus.IsRecording
                         };
                     }
                     else
@@ -149,7 +152,7 @@ namespace ObsWebsocketProxy
                 {
                     lock (locker)
                     {
-                        obs.SetCurrentScene(scene);
+                        obs.SetCurrentProgramScene(scene);
                     }
                 }
                 catch (Exception ex)
@@ -169,11 +172,11 @@ namespace ObsWebsocketProxy
                     {
                         if (enabled)
                         {
-                            obs.StartRecording();
+                            obs.StartRecord();
                         }
                         else
                         {
-                            obs.StopRecording();
+                            obs.StopRecord();
                         }
                     }
                 }
@@ -194,11 +197,11 @@ namespace ObsWebsocketProxy
                     {
                         if (enabled)
                         {
-                            obs.StartStreaming();
+                            obs.StartStream();
                         }
                         else
                         {
-                            obs.StopStreaming();
+                            obs.StopStream();
                         }
                     }
                 }
