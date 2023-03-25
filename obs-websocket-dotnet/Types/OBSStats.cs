@@ -5,60 +5,72 @@ namespace OBSWebsocketDotNet.Types
     /// <summary>
     /// OBS Stats
     /// </summary>
-    public class OBSStats
+    public class ObsStats
     {
         /// <summary>
         /// Current framerate.
         /// </summary>
-        [JsonProperty(PropertyName = "fps")]
+        [JsonProperty(PropertyName = "activeFps")]
         public double FPS { set; get; }
 
         /// <summary>
         /// Number of frames rendered
         /// </summary>
-        [JsonProperty(PropertyName = "render-total-frames")]
-        public int RenderTotalFrames { set; get; }
+        [JsonProperty(PropertyName = "renderTotalFrames")]
+        public long RenderTotalFrames { set; get; }
 
         /// <summary>
         /// Number of frames missed due to rendering lag
         /// </summary>
-        [JsonProperty(PropertyName = "render-missed-frames")]
-        public int RenderMissedFrames { set; get; }
+        [JsonProperty(PropertyName = "renderSkippedFrames")]
+        public long RenderMissedFrames { set; get; }
 
         /// <summary>
         /// Number of frames outputted
         /// </summary>
-        [JsonProperty(PropertyName = "output-total-frames")]
-        public int OutputTotalFrames { set; get; }
+        [JsonProperty(PropertyName = "outputTotalFrames")]
+        public long OutputTotalFrames { set; get; }
 
         /// <summary>
         /// Number of frames skipped due to encoding lag
         /// </summary>
-        [JsonProperty(PropertyName = "output-skipped-frames")]
-        public int OutputSkippedFrames { set; get; }
+        [JsonProperty(PropertyName = "outputSkippedFrames")]
+        public long OutputSkippedFrames { set; get; }
 
         /// <summary>
         /// Average frame render time (in milliseconds)
         /// </summary>
-        [JsonProperty(PropertyName = "average-frame-time")]
+        [JsonProperty(PropertyName = "averageFrameRenderTime")]
         public double AverageFrameTime { set; get; }
 
         /// <summary>
         /// Current CPU usage (percentage)
         /// </summary>
-        [JsonProperty(PropertyName = "cpu-usage")]
+        [JsonProperty(PropertyName = "cpuUsage")]
         public double CpuUsage { set; get; }
 
         /// <summary>
         /// Current RAM usage (in megabytes)
         /// </summary>
-        [JsonProperty(PropertyName = "memory-usage")]
+        [JsonProperty(PropertyName = "memoryUsage")]
         public double MemoryUsage { set; get; }
 
         /// <summary>
         /// Free recording disk space (in megabytes)
         /// </summary>
-        [JsonProperty(PropertyName = "free-disk-space")]
+        [JsonProperty(PropertyName = "availableDiskSpace")]
         public double FreeDiskSpace { set; get; }
+
+        /// <summary>
+        /// Total number of messages received by obs-websocket from the client
+        /// </summary>
+        [JsonProperty(PropertyName = "webSocketSessionIncomingMessages")]
+        public long SessionIncomingMessages { get; set; }
+
+        /// <summary>
+        /// Total number of messages sent by obs-websocket to the client
+        /// </summary>
+        [JsonProperty(PropertyName = "webSocketSessionOutgoingMessages")]
+        public long SessionOutgoingMessages { get; set; }
     }
 }

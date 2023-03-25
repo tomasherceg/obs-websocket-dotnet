@@ -1,6 +1,6 @@
 ﻿/*
     TestClient for obs-websocket-dotnet
-    Copyright (C) 2017	Stéphane Lepin <stephane.lepin@gmail.com>
+    Copyright (C) 2021	Stéphane Lepin, BarRaider
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,6 +29,10 @@ namespace TestClient
         [STAThread]
         static void Main()
         {
+            // Set the unhandled exception mode to force all Windows Forms errors
+            // to go through our handler.
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainWindow());
