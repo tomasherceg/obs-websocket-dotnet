@@ -1,0 +1,30 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="VmixMouseTracker.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Area_X" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="Area_Y" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="Area_Width" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">320</Value>
+    </Setting>
+    <Setting Name="Area_Height" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">240</Value>
+    </Setting>
+    <Setting Name="ComboInputName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Combo</Value>
+    </Setting>
+    <Setting Name="ScreenOnlyInputName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Screen Only</Value>
+    </Setting>
+    <Setting Name="VmixApiBaseUrl" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://localhost:8088</Value>
+    </Setting>
+    <Setting Name="IsEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
